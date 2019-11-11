@@ -43,6 +43,19 @@ router.post('/login', (req, res) => {
       });
   });
 
+
+  router.get('/users', restricted, (req, res) => {
+    // we don't know about sessions/cookies
+    // we don't know about jwts 
+    // ?
+    // WE NEED TO PROVIDE CREDENTIALS EVERY TIME ?????
+    Users.find()
+      .then(users => {
+        res.json(users);
+      })
+      .catch(err => res.send(err));
+  });
+
 function restricted(req, res, next) {
     const {username, password} = req.headers
 
