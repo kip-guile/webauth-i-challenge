@@ -9,6 +9,20 @@ router.get('/', (req, res) => {
     res.send("It's alive!");
   });
 
+router.delete('/logout', (req, res) => {
+  if (req.session) {
+    req.session.destroy(err => {
+      if (err) {
+        res.json('you can not leave, actually')
+      } else {
+        res.json('goodbye, sad to see you go')
+      }
+    })
+  } else {
+    res.end();
+  }
+})
+
 router.post('/register', (req, res) => {
     let user = req.body;
     const hash = bcrypt.hashSync(user.password, 11)
@@ -58,21 +72,9 @@ router.post('/login', (req, res) => {
   });
 
 function restricted(req, res, next) {
-    const {username, password} = req.headers
 
-    if(username && password) {
-    Users.findBy({ username })
-    .first()
-    .then(user => {
-      if (user && bcrypt.compareSync(password, user.password)) {
+    if(req.session && req.session.user) {
         next();
-      } else {
-        res.status(401).json({ message: 'You shall not pass' });
-      }
-    })
-    .catch(error => {
-      res.status(500).json({ message: error.message });
-    })
     } else {
         res.status(400).json({ message: 'No credentials provided' });
     }

@@ -7,12 +7,6 @@ const KnexSessionStore = require('connect-session-knex')(session);
 
 const server = express();
 
-server.use(logger)
-server.use(express.json());
-server.use(session(sessionConfig));
-server.use('/api/users', UserRouter);
-
-
 const sessionConfig = {
   name: 'test',
   secret: 'keep this with you till death!',
@@ -31,6 +25,11 @@ const sessionConfig = {
     clearInterval: 1000 * 60 * 60
   })
 }
+
+server.use(logger)
+server.use(express.json());
+server.use(session(sessionConfig));
+server.use('/api/users', UserRouter);
 
 function logger(req, res, next) {
     console.log(`${req.method} to ${req.originalUrl}`)
